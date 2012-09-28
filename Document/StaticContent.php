@@ -3,9 +3,11 @@
 namespace Symfony\Cmf\Bundle\ContentBundle\Document;
 
 use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
-use Symfony\Cmf\Bundle\ContentBundle\PublishWorkflow\PublishWorkflowInterface;
+
 use Symfony\Component\Validator\Constraints as Assert;
+
 use Symfony\Cmf\Component\Routing\RouteAwareInterface;
+use Symfony\Cmf\Bundle\CoreBundle\PublishWorkflow\PublishWorkflowInterface;
 
 /**
  * @PHPCRODM\Document(referenceable=true)
@@ -145,7 +147,7 @@ class StaticContent implements RouteAwareInterface, PublishWorkflowInterface
         return $this->publishDate;
     }
 
-    public function setPublishDate($publishDate)
+    public function setPublishDate(\DateTime $publishDate = null)
     {
         $this->publishDate = $publishDate;
     }
