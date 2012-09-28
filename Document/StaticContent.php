@@ -3,13 +3,14 @@
 namespace Symfony\Cmf\Bundle\ContentBundle\Document;
 
 use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
+use Symfony\Cmf\Bundle\ContentBundle\PublishWorkflow\PublishWorkflowInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Cmf\Component\Routing\RouteAwareInterface;
 
 /**
  * @PHPCRODM\Document(referenceable=true)
  */
-class StaticContent implements RouteAwareInterface
+class StaticContent implements RouteAwareInterface, PublishWorkflowInterface
 {
     /**
      * to create the document at the specified location. read only for existing documents.
@@ -45,6 +46,16 @@ class StaticContent implements RouteAwareInterface
      * @PHPCRODM\String()
      */
     protected $body;
+
+    /**
+     * @PHPCRODM\Boolean()
+     */
+    protected $isPublished = false;
+
+    /**
+     * @PHPCRODM\Date()
+     */
+    protected $publishDate;
 
     /**
      * This will usually be a ContainerBlock but can be any block that will be
@@ -111,6 +122,32 @@ class StaticContent implements RouteAwareInterface
     public function setBody($body)
     {
         $this->body = $body;
+    }
+
+    /**
+     * Get the publish state
+     */
+    public function getIsPublished()
+    {
+        return $this->isPublished;
+    }
+
+    public function setIsPublished($isPublished)
+    {
+        $this->isPublished = $isPublished;
+    }
+
+    /**
+     * Get the publish date
+     */
+    public function getPublishDate()
+    {
+        return $this->publishDate;
+    }
+
+    public function setPublishDate($publishDate)
+    {
+        $this->publishDate = $publishDate;
     }
 
     /**

@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Cmf\Bundle\ContentBundle\PublishWorkflow\PublishWorkflowCheckerInterface;
+
 /**
  * The content controller is a simple controller that calls a template with
  * the specified content.
@@ -22,17 +24,25 @@ class ContentController
      */
     protected $defaultTemplate;
 
+    /**
+     * @var PublishWorkflowCheckerInterface
+     */
+    protected $publishWorkflowChecker;
+
+    /**
      * Instantiate the content controller.
      *
      * @param EngineInterface $templating the templating instance to render the
      *      template
      * @param string $defaultTemplate default template to use in case none is
      *      specified explicitly
+     * @param PublishWorkflowCheckerInterface $publishWorkflowChecker
      */
-    public function __construct(EngineInterface $templating, $defaultTemplate)
+    public function __construct(EngineInterface $templating, $defaultTemplate, PublishWorkflowCheckerInterface $publishWorkflowChecker)
     {
         $this->templating = $templating;
         $this->defaultTemplate = $defaultTemplate;
+        $this->publishWorkflowChecker = $publishWorkflowChecker;
     }
 
     /**
@@ -48,7 +58,7 @@ class ContentController
      */
     public function indexAction(Request $request, $contentDocument, $contentTemplate = null)
     {
-        if (!$contentDocument) {
+        if (!$contentDocument || !$this->publishWorkflowChecker->checkIsPublished($contentDocument, $request)) {
             throw new NotFoundHttpException('Content not found: ' . $request->getPathInfo());
         }
 
